@@ -1,0 +1,5 @@
+module.exports = {
+    destinations: [
+        '/Users/i.agbasimalo/vmn/code/services/leaderboard-service'
+    ]
+}

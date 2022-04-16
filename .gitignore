@@ -1,0 +1,12 @@
+depl.sh
+node_modules
+.vscode
+.idea
+dist
+build
+coverage
+
+db-objection-1.0.0.tgz
+
+cliyargs-3.0.0.tgz
+dev/

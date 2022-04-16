@@ -1,0 +1,56 @@
+{
+  "name": "db2objection",
+  "version": "1.0.0",
+  "description": "Generate ObjectionJS models from database tables",
+  "main": "dist/index.js",
+  "scripts": {
+    "build:dev": "NODE_ENV=development tsc",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "cli:dev": "node --require ts-node/register ./src/cli.ts",
+    "dev": "node --require ts-node/register ./src/index.ts",
+    "depl:dev": "npm uninstall -g db2objection && npm run build:dev && npm install -g"
+  },
+  "bin": {
+    "db2objection": "dist/cli.js",
+    "db2obj": "dist/cli.js"
+  },
+  "keywords": [
+    "objection",
+    "objectionjs",
+    "objection js",
+    "generate",
+    "model"
+  ],
+  "author": "Ikenna Agbasimalo <michfx@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/js-beautify": "^1.13.3",
+    "@types/node": "^17.0.24",
+    "@types/pluralize": "0.0.29",
+    "@types/prettier": "^2.6.0",
+    "change-case": "^4.1.2",
+    "cliyargs": "file:../cliyargs/cliyargs-3.0.0.tgz",
+    "fs-extra": "^10.0.1",
+    "js-beautify": "^1.14.3",
+    "knex": "^1.0.7",
+    "mysql2": "^2.3.3",
+    "objection": "^3.0.1",
+    "pg": "^8.7.3",
+    "pluralize": "^8.0.0",
+    "prettier": "^2.6.2",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
+  },
+  "maintainers": [
+    "Ikenna Agbasimalo <michfx@gmail.com>"
+  ],
+  "prettier": {
+    "printWidth": 120,
+    "semi": true,
+    "trailingComma": "none",
+    "singleQuote": true,
+    "tabWidth": 2
+  }
+}
