@@ -1,13 +1,11 @@
-export const PATTERN_MODEL_NAME = '%modelName%';
-export const PATTERN_OBJECTION_PROPERTIES = '%ObjectionProperties%';
-export const PATTERN_TABLE_FIELDS = '%TableFields%';
+import { PATTERN_MODEL_NAME, PATTERN_MODEL_PROPERTIES, PATTERN_TABLE_FIELDS } from './templates.index';
 
-export const modelTemplate = `import { Model } from 'objection';
+export const objectionModelTemplate = `import { Model } from 'objection';
 
 export class ${PATTERN_MODEL_NAME} extends Model {
     
     //region Objection properties
-    ${PATTERN_OBJECTION_PROPERTIES}
+    ${PATTERN_MODEL_PROPERTIES}
     //endregion
     
     //region table fields

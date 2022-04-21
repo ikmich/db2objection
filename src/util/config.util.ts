@@ -1,15 +1,16 @@
-import { CONFIG_FILENAME, DEFAULT_MODELS_DIRNAME, IConfig } from '../index';
-import { filex } from '../libs/filex';
+import { CONFIG_FILENAME, DEFAULT_MODELS_DIRNAME, IDb2ObjectionConfig } from '../index';
+import { filer } from '../libs/filer';
 import Path from 'path';
+import { _path } from './index';
 
 export const configUtil = {
   getConfigFile() {
-    return filex.path(process.cwd(), CONFIG_FILENAME);
+    return _path(process.cwd(), CONFIG_FILENAME);
   },
 
-  getConfig(): IConfig {
-    return filex.read({
-      file: filex.path(process.cwd(), CONFIG_FILENAME),
+  getConfig(): IDb2ObjectionConfig {
+    return filer.read({
+      file: _path(process.cwd(), CONFIG_FILENAME),
       expectJson: true
     });
   },
@@ -26,8 +27,12 @@ export const configUtil = {
     return this.getConfig().modelsOutputDir || DEFAULT_MODELS_DIRNAME;
   },
 
+  getPropCamelCase() {
+    return this.getConfig().camelCase;
+  },
+
   getModelsOutputDirPath() {
-    return filex.path(process.cwd(), this.getPropModelsOutputDir());
+    return _path(process.cwd(), this.getPropModelsOutputDir());
   }
 };
 export const hostConfigFile = Path.join(process.cwd(), CONFIG_FILENAME);

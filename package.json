@@ -1,20 +1,25 @@
 {
   "name": "db2objection",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Generate ObjectionJS models from database tables",
-  "main": "dist/index.js",
+  "main": "dist/bin/index.js",
   "scripts": {
-    "build:dev": "NODE_ENV=development tsc",
+    "build:dev": "LIB_ENV=development tsc",
     "build": "tsc",
+    "clean": "rimraf dist/",
     "prepublishOnly": "npm run build",
-    "cli:dev": "node --require ts-node/register ./src/cli.ts",
-    "dev": "node --require ts-node/register ./src/index.ts",
-    "depl:dev": "npm uninstall -g db2objection && npm run build:dev && npm install -g"
+    "depl:dev": "LIB_ENV=development ./depl.sh"
   },
   "bin": {
-    "db2objection": "dist/cli.js",
-    "db2obj": "dist/cli.js"
+    "db2objection": "dist/bin/index.js",
+    "db2obj": "dist/bin/index.js"
   },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "objection",
     "objectionjs",
@@ -25,13 +30,17 @@
   "author": "Ikenna Agbasimalo <michfx@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@types/dotenv": "^8.2.0",
     "@types/fs-extra": "^9.0.13",
     "@types/js-beautify": "^1.13.3",
     "@types/node": "^17.0.24",
     "@types/pluralize": "0.0.29",
     "@types/prettier": "^2.6.0",
+    "@vscode/sqlite3": "^5.0.8",
+    "better-sqlite3": "^7.5.1",
     "change-case": "^4.1.2",
-    "cliyargs": "file:../cliyargs/cliyargs-3.0.0.tgz",
+    "conf": "^10.1.2",
+    "dotenv": "^16.0.0",
     "fs-extra": "^10.0.1",
     "js-beautify": "^1.14.3",
     "knex": "^1.0.7",
@@ -40,8 +49,11 @@
     "pg": "^8.7.3",
     "pluralize": "^8.0.0",
     "prettier": "^2.6.2",
+    "rimraf": "^3.0.2",
+    "sqlite3": "^5.0.4",
     "ts-node": "^10.7.0",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.3",
+    "cliyargs": "3.0.0"
   },
   "maintainers": [
     "Ikenna Agbasimalo <michfx@gmail.com>"

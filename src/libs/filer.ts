@@ -1,4 +1,3 @@
-import Path from 'path';
 import FS from 'fs-extra';
 
 export type FileWriteParams = {
@@ -13,15 +12,7 @@ export type FileReadParams = {
 /**
  * Utility object for file functions.
  */
-export const filex = {
-  path(...paths: string[]) {
-    return Path.join(...paths);
-  },
-
-  p(...paths: string[]) {
-    return this.path(...paths);
-  },
-
+export const filer = {
   exists(file: string) {
     return FS.existsSync(file);
   },
@@ -41,11 +32,6 @@ export const filex = {
 
       return data;
     })();
-    // if (!data) {
-    //   data = '';
-    // } else if (typeof data !== 'string') {
-    //   data = JSON.stringify(data, null, 2);
-    // }
 
     FS.ensureFileSync(file);
     FS.writeFileSync(file, _data, { encoding: 'utf-8' });
