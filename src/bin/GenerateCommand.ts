@@ -1,7 +1,7 @@
 // noinspection JSMethodCanBeStatic
 
 import { BaseCmd } from 'cliyargs';
-import { CONFIG_FILENAME, IDb2ObjectionConfig } from '../index';
+import { CONFIG_FILENAME } from '../index';
 import { Db2ObjectionOpts } from './index';
 import knex, { Knex } from 'knex';
 import { DbParser } from '../parser/DbParser';

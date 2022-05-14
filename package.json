@@ -27,6 +27,13 @@
     "generate",
     "model"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ikmich/db2objection"
+  },
+  "maintainers": [
+    "Ikenna Agbasimalo <michfx@gmail.com>"
+  ],
   "author": "Ikenna Agbasimalo <michfx@gmail.com>",
   "license": "MIT",
   "dependencies": {
@@ -55,9 +62,6 @@
     "typescript": "^4.6.3",
     "cliyargs": "3.0.0"
   },
-  "maintainers": [
-    "Ikenna Agbasimalo <michfx@gmail.com>"
-  ],
   "prettier": {
     "printWidth": 120,
     "semi": true,
