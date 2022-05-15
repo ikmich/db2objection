@@ -102,8 +102,11 @@ export class GenerateCommand extends BaseCmd<Db2ObjectionOpts> {
         case 'sqlite3':
         case 'better-sqlite3':
           return new SqliteParser(knexInstance);
+
         default:
-          throw new Error('Valid client for db parser not found');
+          const msg = 'Supported knex connection client for db parser not found';
+          conprint.error(`ERROR! ${msg}`);
+          throw new Error(msg);
       }
     })();
 

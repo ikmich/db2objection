@@ -1,6 +1,6 @@
 {
   "name": "db2objection",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generate ObjectionJS models from database tables",
   "main": "dist/bin/index.js",
   "scripts": {
@@ -24,9 +24,13 @@
     "objection",
     "objectionjs",
     "objection js",
+    "database",
     "generate",
     "model"
   ],
+  "bugs": {
+    "url": "https://github.com/ikmich/db2objection/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ikmich/db2objection"

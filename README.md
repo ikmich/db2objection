@@ -4,11 +4,21 @@ Generate [ObjectionJS](https://vincit.github.io/objection.js/) models from datab
 
 ## Install
 
+Install globally with npm or yarn.
+
 ```shell
 $ npm install -g db2objection
 # or
 $ yarn add global db2objection
 ```
+
+## Supported databases
+
+`db2objection` currently supports the following databases:
+
+- MySQL
+- PostgreSQL
+- SQLite
 
 ## Commands
 
@@ -46,7 +56,7 @@ See the current version.
 
 ## The config file
 
-The `db2objection.config.js` file is a js module with the following properties:
+The `db2objection.config.js` file is a module with the following properties:
 
 ```javascript
 module.exports = {
