@@ -1,10 +1,7 @@
-depl.sh
 node_modules
 .vscode
 .idea
 dist
 build
 coverage
-
-dev/
 .env
