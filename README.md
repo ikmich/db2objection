@@ -4,7 +4,7 @@ Generate [ObjectionJS](https://vincit.github.io/objection.js/) models from datab
 
 ## Install
 
-Install globally with npm or yarn.
+Install cli globally with npm or yarn.
 
 ```shell
 $ npm install -g db2objection
@@ -42,7 +42,7 @@ Generate ObjectionJS model classes.
 `--table=<table_reference>` [string] - Name of table to generate model for. Set this option multiple times to specify an
 array of tables.  
 `--database=<database_name>` [string] - The database to connect to. This overrides the database value that is set in the
-config file.
+config file.  
 `--pojo` [boolean] - Whether plain Typescript model classes will be generated, and not classes extending ObjectionJS
 Model.
 
