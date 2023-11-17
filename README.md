@@ -101,4 +101,5 @@ module.exports = {
 - The dir for generated models will not be deleted anymore. Now, the specific model files will simply be replaced
   and a copy of the old file be placed in the history folder in the project root.
 - Database name value from cli option flag takes precedence over value in `db2objection.config.cjs` file.
-- `--case` is now a string option, replacing --camelCase.
+- cli update: `--case` is now a string option, replacing --camelCase.
+- New cli option: `--dir` to specify where model object files will be generated.

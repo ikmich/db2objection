@@ -1,35 +1,32 @@
-import { IDb2ObjectionConfig } from '../index.js';
+import { IDb2ObjectionConfig } from '../types.js';
 import { filer } from '../libs/filer.js';
 import Path from 'path';
 import { pathJoin } from './index.js';
-import { CONFIG_FILENAME, DEFAULT_MODELS_DIRNAME } from '../consts.js';
+import { CONFIG_FILENAME, DEFAULT_MODELS_DIR } from '../consts.js';
 
 export const configUtil = {
   getConfigFile() {
     return pathJoin(process.cwd(), CONFIG_FILENAME);
   },
 
-  getConfig(): IDb2ObjectionConfig {
+  getConfigObject(): IDb2ObjectionConfig {
+    const file = this.getConfigFile();
+    if (!filer.exists(file)) {
+      return { knex: { client: '', connection: {} }, modelsOutputDir: '' };
+    }
+
     return filer.read({
-      file: pathJoin(process.cwd(), CONFIG_FILENAME),
+      file: this.getConfigFile(),
       expectJson: true
     });
   },
 
-  getPropKnex() {
-    return this.getConfig().knex;
+  getIgnoreTablesProperty() {
+    return this.getConfigObject().ignoreTables;
   },
 
-  getPropIgnoreTables() {
-    return this.getConfig().ignoreTables;
-  },
-
-  getPropModelsOutputDir() {
-    return this.getConfig().modelsOutputDir || DEFAULT_MODELS_DIRNAME;
-  },
-
-  getModelsOutputDirPath() {
-    return pathJoin(process.cwd(), this.getPropModelsOutputDir());
+  getModelsOutputDirProperty() {
+    return this.getConfigObject().modelsOutputDir || DEFAULT_MODELS_DIR;
   }
 };
 export const hostConfigFile = Path.join(process.cwd(), CONFIG_FILENAME);

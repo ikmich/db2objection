@@ -3,6 +3,7 @@ import { Command } from 'commander';
 import { CONFIG_FILENAME } from '../consts.js';
 import { GenerateCommand } from './GenerateCommand.js';
 import { InitCommand } from './init/InitCommand.js';
+import appData from '../util/app-data.js';
 
 export const CMD_INIT = 'init';
 export const CMD_GENERATE = 'generate';
@@ -32,7 +33,7 @@ program
   .option('-c | --case <char>', '(snake | camel | ignore) Used with the `generate` command to indicate the name case for the generated model properties.')
   .option('--pojo', 'Used with the `generate` command to specify whether plain Typescript model classes will be generated, and not classes extending ObjectionJS Model.')
   .option('--db, --database <char>', 'Specify the database to connect to. This overrides the database value that is set in the config file.')
-  .option('-d, --dir <char>', 'Specify target directory path relative to the project root.')
+  .option('--dir <char>', 'Specify target directory path relative to the project root.')
 ;
 
 program
@@ -57,3 +58,5 @@ program
   });
 
 program.parse();
+
+appData.setProjectRoot(process.cwd());

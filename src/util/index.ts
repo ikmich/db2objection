@@ -43,5 +43,3 @@ export function getDebugFilePath(filename: string) {
   return Path.join(DEBUG_DIR_PATH, filename);
 }
 
-export { CONF_COMMAND_ARGS } from './app-data.js';
-export { CONF_COMMAND_OPTIONS } from './app-data.js';

@@ -2,7 +2,7 @@ import { BaseDbParser } from './DbParser.js';
 import { configUtil } from '../util/config.util.js';
 import { filer } from '../libs/filer.js';
 import { _debug, getDebugFilePath } from '../util/index.js';
-import { IModel, IProperty, PostgresColumnInfo, PostgresTableInfo } from '../index.js';
+import { IModel, IProperty, PostgresColumnInfo, PostgresTableInfo } from '../types.js';
 import * as ChangeCase from 'change-case';
 import appData from '../util/app-data.js';
 import pkg from 'pluralize';
@@ -23,7 +23,7 @@ SELECT
 FROM ${targetDatabase}.information_schema.tables t
 WHERE t.table_schema NOT IN ('pg_catalog', 'information_schema')`);
 
-    const IGNORE_LIST = configUtil.getPropIgnoreTables() || [];
+    const IGNORE_LIST = configUtil.getIgnoreTablesProperty() || [];
 
     const tableInfoList: PostgresTableInfo[] = (Array.from(tablesQueryResult.rows || []) as PostgresTableInfo[]).filter(
       (record) => {

@@ -1,4 +1,4 @@
-import { IModel, IProperty, MysqlColumnInfo } from '../index.js';
+import { IModel, IProperty, MysqlColumnInfo } from '../types.js';
 import { BaseDbParser } from './DbParser.js';
 import * as ChangeCase from 'change-case';
 import { filer } from '../libs/filer.js';
@@ -34,7 +34,7 @@ export class MysqlParser extends BaseDbParser {
 
     const modelDescriptors: IModel[] = [];
 
-    const ignoreList = configUtil.getPropIgnoreTables() || [];
+    const ignoreList = configUtil.getIgnoreTablesProperty() || [];
 
     for (let table of tableNames) {
       if (ignoreList.includes(table)) {

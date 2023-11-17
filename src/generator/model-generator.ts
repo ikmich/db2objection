@@ -1,9 +1,8 @@
-import { IModel, IProperty } from '../index.js';
+import { IModel, IProperty } from '../types.js';
 import { filer } from '../libs/filer.js';
 import { objectionModelTemplate } from './templates/objection-model-template.js';
-import pkg from 'js-beautify';
-import { configUtil } from '../util/config.util.js';
-import { CONF_COMMAND_OPTIONS, pathJoin } from '../util/index.js';
+import jsBeautifyPackage from 'js-beautify';
+import { pathJoin } from '../util/index.js';
 import { Db2ObjOpts } from '../bin/index.js';
 import * as ChangeCase from 'change-case';
 import { PATTERN_MODEL_NAME, PATTERN_MODEL_PROPERTIES, PATTERN_TABLE_FIELDS } from './templates/templates.index.js';
@@ -11,10 +10,11 @@ import { pojoModelTemplate } from './templates/pojo-model-template.js';
 import appData from '../util/app-data.js';
 import Path from 'path';
 import { format } from 'date-fns';
-import { logNotice } from '../util/log.util.js';
+import { HISTORY_DIRNAME } from '../consts.js';
+import { appUtil } from '../util/app.util.js';
 
 const DATE_FORMAT_HISTORY = 'yyyyMMdd_hhmmss_SSSS';
-const { js: beautifyJs } = pkg;
+const { js: beautifyJs } = jsBeautifyPackage;
 
 const regexes = {
   modelName: new RegExp(PATTERN_MODEL_NAME, 'g'),
@@ -24,14 +24,16 @@ const regexes = {
 };
 
 export const modelGenerator = {
+
   /**
    * Generates an ObjectionJS model class file
    * @param descriptors
    */
   generate(descriptors: IModel[]) {
-    const outputDir = pathJoin(process.cwd(), configUtil.getPropModelsOutputDir());
+    // const outputDir = pathJoin(process.cwd(), configUtil.getModelsOutputDirProperty());
+    const outputDir = appUtil.resolveModelsOutputDirPath();
 
-    const commandOpts = appData.get(CONF_COMMAND_OPTIONS) as Db2ObjOpts;
+    const commandOpts = appData.getCommandOptions();
 
     let modelTemplate = (() => {
       if (commandOpts && commandOpts.pojo) {
@@ -55,20 +57,15 @@ export const modelGenerator = {
       let objFile = pathJoin(outputDir, `${descriptor.modelName}.obj.ts`);
 
       if (filer.exists(objFile)) {
-        logNotice(`File exists (${objFile})`);
-        // create copy?
-        const copyDestDir = Path.join(process.cwd(), '__db2obj-history');
+        // create history version.
+        const copyDestDir = Path.join(process.cwd(), HISTORY_DIRNAME);
         filer.ensureDir(copyDestDir);
-
-        logNotice(`copyDestDir: ${copyDestDir}`);
 
         const formattedDate = format(new Date(), DATE_FORMAT_HISTORY);
         const historyFileName = `${descriptor.modelName}.obj-${formattedDate}.ts`;
         let historyFilePath = Path.join(copyDestDir, historyFileName);
         filer.write({
-          data: filer.read({
-            file: objFile
-          }),
+          data: filer.read({ file: objFile }),
           file: historyFilePath
         });
       }
@@ -107,7 +104,7 @@ function generateModelProperties(template: string, model: IModel): string {
     let propertyName = property.name;
 
     // can use snake case if option provided
-    const runtimeOptions = appData.get(CONF_COMMAND_OPTIONS) as Db2ObjOpts;
+    const runtimeOptions = appData.getCommandOptions() as Db2ObjOpts;
 
     switch (runtimeOptions?.case) {
       case 'camel':
@@ -118,11 +115,6 @@ function generateModelProperties(template: string, model: IModel): string {
         break;
     }
 
-    // if (cliOpts && cliOpts.snakeCase) {
-    //   propertyName = ChangeCase.snakeCase(propertyName);
-    // } else {
-    //   propertyName = ChangeCase.camelCase(propertyName);
-    // }
     code += `${propertyName}${getDefaultQualifier(property)}: ${property.type}`;
 
     // /* Set default value if property is not nullable */

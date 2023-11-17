@@ -1,5 +1,5 @@
 import { BaseDbParser } from './DbParser.js';
-import { IModel, IProperty, SqliteColumnInfo } from '../index.js';
+import { IModel, IProperty, SqliteColumnInfo } from '../types.js';
 import { configUtil } from '../util/config.util.js';
 import { filer } from '../libs/filer.js';
 import { _debug, getDebugFilePath } from '../util/index.js';
@@ -62,7 +62,7 @@ export class SqliteParser extends BaseDbParser {
   async getTableNames(): Promise<string[]> {
     let records: { name: string }[] = await this.knex.raw('select tbl_name as name from sqlite_master;');
 
-    const ignoreList = configUtil.getPropIgnoreTables() || [];
+    const ignoreList = configUtil.getIgnoreTablesProperty() || [];
 
     records = records.filter((record) => {
       return !ignoreList.includes(record.name);

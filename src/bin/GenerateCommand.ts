@@ -9,16 +9,17 @@ import { configUtil, hostConfigFile } from '../util/config.util.js';
 import pluralize from 'pluralize';
 import { SqliteParser } from '../parser/SqliteParser.js';
 import { PostgresParser } from '../parser/PostgresParser.js';
-import appData, { CONF_COMMAND_ARGS, CONF_COMMAND_OPTIONS, CONF_CONFIG } from '../util/app-data.js';
+import appData from '../util/app-data.js';
 import { CONFIG_FILENAME } from '../consts.js';
 import { BaseCommand } from './base.command.js';
 import { logError } from '../util/log.util.js';
+import { appUtil } from '../util/app.util.js';
 import ConnectionConfig = Knex.ConnectionConfig;
 
 export class GenerateCommand extends BaseCommand {
 
   private resolveDatabase(): string {
-    const confDatabase = (configUtil.getConfig().knex.connection as ConnectionConfig).database;
+    const confDatabase = (configUtil.getConfigObject().knex.connection as ConnectionConfig).database;
     const optsDatabase = this.options.database;
 
     /* database from cli option flag should take precedence. */
@@ -35,7 +36,7 @@ export class GenerateCommand extends BaseCommand {
       return;
     }
 
-    const config = configUtil.getConfig();
+    const config = configUtil.getConfigObject();
 
     if (!config.knex) {
       console.error('ERROR - Missing `knex` configuration property');
@@ -43,7 +44,7 @@ export class GenerateCommand extends BaseCommand {
     }
 
     // store config
-    appData.set(CONF_CONFIG, config);
+    appData.saveConfig(config);
 
     let usingSqliteClient = ['sqlite', 'sqlite3', 'better-sqlite'].includes(config.knex.client);
 
@@ -77,8 +78,8 @@ export class GenerateCommand extends BaseCommand {
     this.options.case = this.options.case ? this.options.case : (config.case || 'camel');
 
     // store options
-    appData.set(CONF_COMMAND_OPTIONS, this.options);
-    appData.set(CONF_COMMAND_ARGS, this.args);
+    appData.saveCommandOptions(this.options);
+    appData.saveCommandArgs(this.args);
 
     const selectTables = (() => {
       if (typeof this.options.table === 'string') {
@@ -113,7 +114,7 @@ export class GenerateCommand extends BaseCommand {
       }
     })();
 
-    const modelsDirName = configUtil.getPropModelsOutputDir();
+    // const modelsDirName = configUtil.getModelsOutputDirProperty();
 
     try {
       const modelDescriptors = await dbParser.buildModelDescriptors(selectTables);
@@ -121,8 +122,13 @@ export class GenerateCommand extends BaseCommand {
       // generate objection models
       modelGenerator.generate(modelDescriptors);
 
+      const outputDirPath = appUtil.resolveModelsOutputDirPath();
+      const projectRoot = appData.getProjectRoot();
+      const relPath = outputDirPath.replace(new RegExp(`^${projectRoot}(/*)`), '')
+        .replace(/\/*$/, '/');
+
       const num = modelDescriptors.length;
-      console.log(`${num} ${pluralize('model', num)} generated in "./${modelsDirName}".`);
+      console.log(`${num} ${pluralize('model', num)} generated in "${relPath}".`);
     } catch (e) {
       console.error(e);
       process.exit(-1);

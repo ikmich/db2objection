@@ -33,11 +33,11 @@ export class InitCommand extends BaseCommand {
     }
   },
 
-  modelsOutputDir: '', // Relative path where the objection models should be saved.
+  modelsOutputDir: 'src/obj-models', // Relative path where the objection models should be saved.
 
   ignoreTables: [], // Tables to be ignored. e.g. migration tables and other tables used by frameworks.
   
-  // case: 'camel' // 'camel' | 'snake' | 'ignore'
+  case: 'camel' // 'camel' | 'snake' | 'ignore'
 };`;
 
     filer.write({

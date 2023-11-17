@@ -1,11 +1,12 @@
 import Conf from 'conf';
-import { IDb2ObjectionConfig } from '../index.js';
+import { IDb2ObjectionConfig } from '../types.js';
 import { Db2ObjOpts } from '../bin/index.js';
 
-export const CONF_CONFIG = 'config';
-export const CONF_COMMAND_OPTIONS = 'command-options';
-export const CONF_COMMAND_ARGS = 'command-args';
-export const CONF_DATABASE = 'database';
+const conf_config = 'config';
+const conf_command_options = 'command-options';
+const conf_command_args = 'command-args';
+const conf_database = 'database';
+const key_project_root = 'project-root';
 
 const conf = new Conf({
   projectName: 'db2objection'
@@ -20,20 +21,48 @@ const appData = {
     conf.set(key, value);
   },
 
+  getProjectRoot(): string {
+    return (this.get(key_project_root) || process.cwd()) as string;
+  },
+
+  setProjectRoot(path: string) {
+    this.set(key_project_root, path);
+  },
+
   getCommandOptions(): Db2ObjOpts | undefined {
-    return <Db2ObjOpts>this.get(CONF_COMMAND_OPTIONS);
+    return <Db2ObjOpts>this.get(conf_command_options);
+  },
+
+  saveCommandOptions(opts: Db2ObjOpts) {
+    this.set(conf_command_options, opts);
+  },
+
+  saveCommandArgs(args?: string[]) {
+    this.set(conf_command_args, args);
+  },
+
+  getCommandArgs(): string[] | undefined {
+    let out = this.get(conf_command_args);
+    if (out) {
+      return out as string[];
+    }
+    return undefined;
   },
 
   getConfig(): IDb2ObjectionConfig {
-    return <IDb2ObjectionConfig>this.get(CONF_CONFIG);
+    return <IDb2ObjectionConfig>this.get(conf_config);
+  },
+
+  saveConfig(config: IDb2ObjectionConfig) {
+    this.set(conf_config, config);
   },
 
   setDatabase(database: string) {
-    conf.set(CONF_DATABASE, database);
+    conf.set(conf_database, database);
   },
 
   getDatabase(): string | unknown {
-    return this.get(CONF_DATABASE);
+    return this.get(conf_database);
   }
 };
 
