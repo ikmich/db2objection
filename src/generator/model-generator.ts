@@ -1,14 +1,20 @@
-import { IModel, IProperty } from '../index';
-import { filer } from '../libs/filer';
-import { objectionModelTemplate } from './templates/objection-model-template';
-import { js as beautifyJs } from 'js-beautify';
-import { configUtil } from '../util/config.util';
-import { _path, CONF_COMMAND_OPTIONS } from '../util';
-import { Db2ObjectionOpts } from '../bin';
+import { IModel, IProperty } from '../index.js';
+import { filer } from '../libs/filer.js';
+import { objectionModelTemplate } from './templates/objection-model-template.js';
+import pkg from 'js-beautify';
+import { configUtil } from '../util/config.util.js';
+import { CONF_COMMAND_OPTIONS, pathJoin } from '../util/index.js';
+import { Db2ObjOpts } from '../bin/index.js';
 import * as ChangeCase from 'change-case';
-import { PATTERN_MODEL_NAME, PATTERN_MODEL_PROPERTIES, PATTERN_TABLE_FIELDS } from './templates/templates.index';
-import { pojoModelTemplate } from './templates/pojo-model-template';
-import appData from '../util/app-data';
+import { PATTERN_MODEL_NAME, PATTERN_MODEL_PROPERTIES, PATTERN_TABLE_FIELDS } from './templates/templates.index.js';
+import { pojoModelTemplate } from './templates/pojo-model-template.js';
+import appData from '../util/app-data.js';
+import Path from 'path';
+import { format } from 'date-fns';
+import { logNotice } from '../util/log.util.js';
+
+const DATE_FORMAT_HISTORY = 'yyyyMMdd_hhmmss_SSSS';
+const { js: beautifyJs } = pkg;
 
 const regexes = {
   modelName: new RegExp(PATTERN_MODEL_NAME, 'g'),
@@ -23,10 +29,9 @@ export const modelGenerator = {
    * @param descriptors
    */
   generate(descriptors: IModel[]) {
-    const outputDir = _path(process.cwd(), configUtil.getPropModelsOutputDir());
-    filer.resetDir(outputDir);
+    const outputDir = pathJoin(process.cwd(), configUtil.getPropModelsOutputDir());
 
-    const commandOpts = appData.get(CONF_COMMAND_OPTIONS) as Db2ObjectionOpts;
+    const commandOpts = appData.get(CONF_COMMAND_OPTIONS) as Db2ObjOpts;
 
     let modelTemplate = (() => {
       if (commandOpts && commandOpts.pojo) {
@@ -40,14 +45,38 @@ export const modelGenerator = {
       code = code.replace(regexes.modelProperties, generateObjectionProperties(code, descriptor));
       code = code.replace(regexes.tableFields, generateModelProperties(code, descriptor));
 
-      code = beautifyJs(code);
+      code = beautifyJs(code, {
+        brace_style: 'preserve-inline',
+        indent_size: 2
+      });
 
       code = code.replace(regexes.nullishOperator, '?:');
+
+      let objFile = pathJoin(outputDir, `${descriptor.modelName}.obj.ts`);
+
+      if (filer.exists(objFile)) {
+        logNotice(`File exists (${objFile})`);
+        // create copy?
+        const copyDestDir = Path.join(process.cwd(), '__db2obj-history');
+        filer.ensureDir(copyDestDir);
+
+        logNotice(`copyDestDir: ${copyDestDir}`);
+
+        const formattedDate = format(new Date(), DATE_FORMAT_HISTORY);
+        const historyFileName = `${descriptor.modelName}.obj-${formattedDate}.ts`;
+        let historyFilePath = Path.join(copyDestDir, historyFileName);
+        filer.write({
+          data: filer.read({
+            file: objFile
+          }),
+          file: historyFilePath
+        });
+      }
 
       // Write model file to output directory.
       filer.write({
         data: code,
-        file: _path(outputDir, `${descriptor.modelName}.model.ts`)
+        file: objFile
       });
     }
   }
@@ -77,11 +106,23 @@ function generateModelProperties(template: string, model: IModel): string {
   for (let property of model.modelProperties) {
     let propertyName = property.name;
 
-    // can use camelCase if option provided
-    const commandOptions = appData.get(CONF_COMMAND_OPTIONS) as Db2ObjectionOpts;
-    if (commandOptions && commandOptions.camelCase) {
-      propertyName = ChangeCase.camelCase(propertyName);
+    // can use snake case if option provided
+    const runtimeOptions = appData.get(CONF_COMMAND_OPTIONS) as Db2ObjOpts;
+
+    switch (runtimeOptions?.case) {
+      case 'camel':
+        propertyName = ChangeCase.camelCase(propertyName);
+        break;
+      case 'snake':
+        propertyName = ChangeCase.snakeCase(propertyName);
+        break;
     }
+
+    // if (cliOpts && cliOpts.snakeCase) {
+    //   propertyName = ChangeCase.snakeCase(propertyName);
+    // } else {
+    //   propertyName = ChangeCase.camelCase(propertyName);
+    // }
     code += `${propertyName}${getDefaultQualifier(property)}: ${property.type}`;
 
     // /* Set default value if property is not nullable */

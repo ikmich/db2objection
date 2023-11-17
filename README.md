@@ -1,10 +1,11 @@
 # db2objection
 
 Generate [ObjectionJS](https://vincit.github.io/objection.js/) models from database tables.
+_(Note: This is an ESM package from v0.1.0)_
 
 ## Install
 
-Install cli globally with npm or yarn.
+Install cli globally with npm, yarn or your preferred package manager.
 
 ```shell
 $ npm install -g db2objection
@@ -38,12 +39,12 @@ Generate ObjectionJS model classes.
 
 ###### Options
 
-`--camelCase` [boolean] - Specify whether the model properties should be printed in camel case.  
-`--table=<table_reference>` [string] - Name of table to generate model for. Set this option multiple times to specify an
-array of tables.  
-`--database=<database_name>` [string] - The database to connect to. This overrides the database value that is set in the
-config file.  
-`--pojo` [boolean] - Whether plain Typescript model classes will be generated, and not classes extending ObjectionJS
+`--snake-case` [boolean] - Indicate that the model properties should be printed in snake case.  
+`-t | --table=<table_reference>` [string] - Name of table to generate model for. Set this option multiple times to
+specify an array of tables.  
+`-db | --database=<database_name>` [string] - The database to connect to. This overrides the database value that is set
+in the config file.  
+`--pojo` [boolean] - Whether plain Typescript model classes will be generated, and not classes extending Objection.js
 Model.
 
 ### `$ db2obj --help`
@@ -86,8 +87,18 @@ module.exports = {
   ignoreTables: [],
 
   /**
-   * Set to 'true' to use camelCase for the generated model properties
+   * Set to 'true' to use snake case for the generated model properties
    */
-  camelCase: false
+  snakeCase: false
 };
 ```
+
+---
+
+# 0.1.0 changelogs
+
+- Convert to ESM package.
+- The dir for generated models will not be deleted anymore. Now, the specific model files will simply be replaced
+  and a copy of the old file be placed in the history folder in the project root.
+- Database name value from cli option flag takes precedence over value in `db2objection.config.cjs` file.
+- `--case` is now a string option, replacing --camelCase.

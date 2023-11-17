@@ -1,40 +1,44 @@
 // noinspection JSMethodCanBeStatic
 
-import { BaseCmd } from 'cliyargs';
-import { CONFIG_FILENAME } from '../index';
-import { Db2ObjectionOpts } from './index';
 import knex, { Knex } from 'knex';
-import { DbParser } from '../parser/DbParser';
-import { MysqlParser } from '../parser/MysqlParser';
-import { modelGenerator } from '../generator/model-generator';
-import { filer } from '../libs/filer';
-import { configUtil, hostConfigFile } from '../util/config.util';
+import { DbParser } from '../parser/DbParser.js';
+import { MysqlParser } from '../parser/MysqlParser.js';
+import { modelGenerator } from '../generator/model-generator.js';
+import { filer } from '../libs/filer.js';
+import { configUtil, hostConfigFile } from '../util/config.util.js';
 import pluralize from 'pluralize';
-import { SqliteParser } from '../parser/SqliteParser';
-import { conprint } from 'cliyargs/dist/utils';
-import { PostgresParser } from '../parser/PostgresParser';
-import appData, { CONF_COMMAND_ARGS, CONF_COMMAND_OPTIONS, CONF_CONFIG } from '../util/app-data';
+import { SqliteParser } from '../parser/SqliteParser.js';
+import { PostgresParser } from '../parser/PostgresParser.js';
+import appData, { CONF_COMMAND_ARGS, CONF_COMMAND_OPTIONS, CONF_CONFIG } from '../util/app-data.js';
+import { CONFIG_FILENAME } from '../consts.js';
+import { BaseCommand } from './base.command.js';
+import { logError } from '../util/log.util.js';
 import ConnectionConfig = Knex.ConnectionConfig;
 
-export class GenerateCommand extends BaseCmd<Db2ObjectionOpts> {
+export class GenerateCommand extends BaseCommand {
+
   private resolveDatabase(): string {
     const confDatabase = (configUtil.getConfig().knex.connection as ConnectionConfig).database;
     const optsDatabase = this.options.database;
-    return confDatabase || optsDatabase || '';
+
+    /* database from cli option flag should take precedence. */
+    if (optsDatabase) {
+      return optsDatabase;
+    }
+    return confDatabase || '';
   }
 
   async run(): Promise<void> {
-    await super.run();
 
     if (!filer.exists(hostConfigFile)) {
-      conprint.error(`File not found: ${CONFIG_FILENAME}. Have you run \`$ db2obj init\`?`);
+      console.error(`File not found: ${CONFIG_FILENAME}. Have you run \`$ db2obj init\`?`);
       return;
     }
 
     const config = configUtil.getConfig();
 
     if (!config.knex) {
-      conprint.error('ERROR - Missing `knex` configuration property');
+      console.error('ERROR - Missing `knex` configuration property');
       return;
     }
 
@@ -48,8 +52,8 @@ export class GenerateCommand extends BaseCmd<Db2ObjectionOpts> {
 
     // If no database option, throw error. There must be a database to work with.
     if (!usingSqliteClient && !resolvedDatabase) {
-      conprint.error(
-        `ERROR - No database to work with. Set database in ${CONFIG_FILENAME} or with the --database command option`
+      logError(
+        `ERROR - No database to work with. Set database in ${CONFIG_FILENAME} or with the --database flag`
       );
       return;
     }
@@ -69,9 +73,8 @@ export class GenerateCommand extends BaseCmd<Db2ObjectionOpts> {
       knexConfiguration.useNullAsDefault = true;
     }
 
-    if (!this.options.camelCase && typeof config.camelCase !== 'undefined') {
-      this.options.camelCase = config.camelCase;
-    }
+    /* Process naming case. Default to camel case. */
+    this.options.case = this.options.case ? this.options.case : (config.case || 'camel');
 
     // store options
     appData.set(CONF_COMMAND_OPTIONS, this.options);
@@ -105,7 +108,7 @@ export class GenerateCommand extends BaseCmd<Db2ObjectionOpts> {
 
         default:
           const msg = 'Supported knex connection client for db parser not found';
-          conprint.error(`ERROR! ${msg}`);
+          console.error(`ERROR! ${msg}`);
           throw new Error(msg);
       }
     })();
@@ -119,7 +122,7 @@ export class GenerateCommand extends BaseCmd<Db2ObjectionOpts> {
       modelGenerator.generate(modelDescriptors);
 
       const num = modelDescriptors.length;
-      conprint.success(`${num} ${pluralize('model', num)} generated in "./${modelsDirName}".`);
+      console.log(`${num} ${pluralize('model', num)} generated in "./${modelsDirName}".`);
     } catch (e) {
       console.error(e);
       process.exit(-1);

@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { IModel } from '../index';
+import { IModel } from '../index.js';
 
 export interface DbParser {
   getTableNames: () => Promise<string[]>;

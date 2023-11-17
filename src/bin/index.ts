@@ -1,84 +1,59 @@
 #!/usr/bin/env node
-
-import { BaseCmdOpts, cliyargs, CmdInfo } from 'cliyargs';
-import { CONFIG_FILENAME } from '../index';
-import { InitCommand } from './init/InitCommand';
-import { GenerateCommand } from './GenerateCommand';
-import { LabsCommand } from './LabsCommand';
-import { _debug } from '../util';
+import { Command } from 'commander';
+import { CONFIG_FILENAME } from '../consts.js';
+import { GenerateCommand } from './GenerateCommand.js';
+import { InitCommand } from './init/InitCommand.js';
 
 export const CMD_INIT = 'init';
 export const CMD_GENERATE = 'generate';
 export const CMD_GEN = 'gen';
 export const CMD_LABS = 'labs';
 
-export interface Db2ObjectionOpts extends BaseCmdOpts {
-  reset?: boolean;
+export type NamingCase = 'camel' | 'snake' | 'ignore';
+
+export interface Db2ObjOpts {
+  resetConfig?: boolean;
   table?: string | string[];
   pojo?: boolean;
   database?: string;
-  camelCase?: boolean;
+  case?: NamingCase;
+  // snakeCase?: boolean;
+  // camelCase?: boolean;
+  dir?: string;
 }
 
-const argv = cliyargs.yargs
-  // Define the commands
-  .command(CMD_INIT, `Generate config file: ${CONFIG_FILENAME} and initialize.`)
-  .command(CMD_GENERATE, 'Generate objection models from db')
-  .command(CMD_GEN, `Alias for '${CMD_GENERATE}'`)
+const program = new Command();
 
-  .option('reset', {
-    type: 'boolean',
-    desc: 'Used with the init command to specify whether to reset the config file if it already exists'
-  })
+program
+  .description('Generate objection.js models or plain object models from database tables.')
+  // .option('-p, --path <char>', 'Path relative to project root.')
+  .option('-t, --table <char>', 'Name of table to generate model for.')
+  .option('--reset-config', 'Used with the init command to specify whether to reset the config file if it already exists.')
+  .option('-c | --case <char>', '(snake | camel | ignore) Used with the `generate` command to indicate the name case for the generated model properties.')
+  .option('--pojo', 'Used with the `generate` command to specify whether plain Typescript model classes will be generated, and not classes extending ObjectionJS Model.')
+  .option('--db, --database <char>', 'Specify the database to connect to. This overrides the database value that is set in the config file.')
+  .option('-d, --dir <char>', 'Specify target directory path relative to the project root.')
+;
 
-  .option('table', {
-    type: 'string',
-    desc: 'Name of table to generate model for. Set this option multiple times to specify an array of tables.'
-  })
+program
+  .command(CMD_INIT)
+  .description(`Generate config file: ${CONFIG_FILENAME} and initialize.`)
+  .action(async () => {
+    await new InitCommand(program).run();
+  });
 
-  .option('camelCase', {
-    type: 'boolean',
-    desc: 'Used with the `generate` command to specify whether the model properties should be printed in camel case'
-  })
+program
+  .command(CMD_GENERATE, { isDefault: true })
+  .description('Generate objection models from db')
+  .action(async () => {
+    await new GenerateCommand(program).run();
+  });
 
-  .option('pojo', {
-    type: 'boolean',
-    desc: 'Used with the `generate` command to specify whether plain Typescript model classes will be generated, and not classes extending ObjectionJS Model'
-  })
+program
+  .command(CMD_GEN)
+  .description(`Alias for '${CMD_GENERATE}'`)
+  .action(async () => {
+    await new GenerateCommand(program).run();
+  });
 
-  .option('database', {
-    type: 'string',
-    alias: 'db',
-    desc: 'Used with the `generate` command to specify the database to connect to. This overrides the database value that is set in the config file'
-  })
-
-  // Enable the 'help' command for your cli app
-  .help().argv;
-
-const commandInfo: CmdInfo<Db2ObjectionOpts> = cliyargs.getCommandInfo(argv);
-
-cliyargs.processCommand(commandInfo, async (commandName) => {
-  // Execute code depending on the provided command name
-  switch (commandName) {
-    case CMD_INIT:
-      await new InitCommand(commandInfo).run();
-      break;
-
-    case CMD_GENERATE:
-    case CMD_GEN:
-      await new GenerateCommand(commandInfo).run();
-      break;
-
-    case CMD_LABS:
-      await _debug(async () => {
-        await new LabsCommand(commandInfo).run();
-      });
-
-      break;
-
-    default:
-      /* If no command is passed, perform the 'generate' command. */
-      await new GenerateCommand(commandInfo).run();
-      break;
-  }
-});
+program.parse();

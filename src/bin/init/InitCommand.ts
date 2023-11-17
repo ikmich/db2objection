@@ -1,25 +1,24 @@
-import { BaseCmd } from 'cliyargs';
-import { CONFIG_FILENAME } from '../../index';
-import { Db2ObjectionOpts } from '../index';
-import { configUtil } from '../../util/config.util';
-import { filer } from '../../libs/filer';
+import { configUtil } from '../../util/config.util.js';
+import { filer } from '../../libs/filer.js';
+import { CONFIG_FILENAME } from '../../consts.js';
+import { BaseCommand } from '../base.command.js';
+import { logNotice } from '../../util/log.util.js';
 
-export class InitCommand extends BaseCmd<Db2ObjectionOpts> {
+export class InitCommand extends BaseCommand {
   async run() {
-    await super.run();
 
     const configFile = configUtil.getConfigFile();
 
-    if (!this.options.reset) {
+    if (!this.options.resetConfig) {
       if (filer.exists(configFile)) {
-        console.log(`${CONFIG_FILENAME} already exists.`);
+        logNotice(`${CONFIG_FILENAME} already exists.`);
         return;
       }
     } else {
       filer.deleteFile(configFile);
     }
 
-    const initContents = `module.exports = {
+    const configFileContents = `module.exports = {
   /**
    * Knex configurations.
    */
@@ -34,25 +33,15 @@ export class InitCommand extends BaseCmd<Db2ObjectionOpts> {
     }
   },
 
-  /**
-   * Relative path where the objection models should be saved. Be careful, as the contents of this directory will be
-   * overwritten when the \`generate\` command is run.
-   */
-  modelsOutputDir: '',
+  modelsOutputDir: '', // Relative path where the objection models should be saved.
 
-  /**
-   * Tables for which models will not be generated.
-   */
-  ignoreTables: [],
+  ignoreTables: [], // Tables to be ignored. e.g. migration tables and other tables used by frameworks.
   
-  /**
-   * Set to 'true' to use camelCase for the generated model properties
-   */
-  camelCase: false
+  // case: 'camel' // 'camel' | 'snake' | 'ignore'
 };`;
 
     filer.write({
-      data: initContents,
+      data: configFileContents,
       file: configFile
     });
 

@@ -1,13 +1,15 @@
 import Conf from 'conf';
-import { IDb2ObjectionConfig } from '..';
-import { Db2ObjectionOpts } from '../bin';
+import { IDb2ObjectionConfig } from '../index.js';
+import { Db2ObjOpts } from '../bin/index.js';
 
 export const CONF_CONFIG = 'config';
 export const CONF_COMMAND_OPTIONS = 'command-options';
 export const CONF_COMMAND_ARGS = 'command-args';
 export const CONF_DATABASE = 'database';
 
-const conf = new Conf();
+const conf = new Conf({
+  projectName: 'db2objection'
+});
 
 const appData = {
   get(key: string) {
@@ -18,8 +20,8 @@ const appData = {
     conf.set(key, value);
   },
 
-  getCommandOptions(): Db2ObjectionOpts | undefined {
-    return <Db2ObjectionOpts>this.get(CONF_COMMAND_OPTIONS);
+  getCommandOptions(): Db2ObjOpts | undefined {
+    return <Db2ObjOpts>this.get(CONF_COMMAND_OPTIONS);
   },
 
   getConfig(): IDb2ObjectionConfig {

@@ -1,10 +1,12 @@
-import { BaseDbParser } from './DbParser';
-import { IModel, IProperty, SqliteColumnInfo } from '../index';
-import { configUtil } from '../util/config.util';
-import { filer } from '../libs/filer';
-import { _debug, _debugFileRef } from '../util';
+import { BaseDbParser } from './DbParser.js';
+import { IModel, IProperty, SqliteColumnInfo } from '../index.js';
+import { configUtil } from '../util/config.util.js';
+import { filer } from '../libs/filer.js';
+import { _debug, getDebugFilePath } from '../util/index.js';
 import * as ChangeCase from 'change-case';
-import { singular } from 'pluralize';
+import pkg from 'pluralize';
+
+const { singular } = pkg;
 
 export class SqliteParser extends BaseDbParser {
   async buildModelDescriptors(selectTables?: string[]): Promise<IModel[]> {
@@ -22,7 +24,7 @@ export class SqliteParser extends BaseDbParser {
       _debug(() => {
         filer.write({
           data: tableInfos,
-          file: _debugFileRef(`pragma-result-${table}.txt`)
+          file: getDebugFilePath(`pragma-result-${table}.txt`)
         });
       });
 
@@ -50,7 +52,7 @@ export class SqliteParser extends BaseDbParser {
     _debug(() => {
       filer.write({
         data: modelDescriptors,
-        file: _debugFileRef(`modelDescriptors.txt`)
+        file: getDebugFilePath(`modelDescriptors.txt`)
       });
     });
 

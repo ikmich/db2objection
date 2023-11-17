@@ -1,4 +1,7 @@
 import FS from 'fs-extra';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 export type FileWriteParams = {
   data?: string | Array<any> | object;
@@ -38,7 +41,7 @@ export const filer = {
   },
 
   read(params: FileReadParams) {
-    let { file, expectJson } = params;
+    let { file, expectJson = false } = params;
     if (!file) return;
 
     const fileExists = FS.existsSync(file);

@@ -1,10 +1,14 @@
-import { DEBUG_DIR_PATH } from '../index';
 import Path from 'path';
+import { fileURLToPath } from 'url';
+import { config } from 'dotenv';
+import { DEBUG_DIR_PATH } from '../consts.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = Path.dirname(__filename);
 export const ENV_PATH = Path.join(__dirname, '../../.env');
 
 export function captureEnv() {
-  require('dotenv').config({
+  config({
     path: ENV_PATH
   });
 }
@@ -17,7 +21,7 @@ export function isDevEnvironment() {
   return process.env.LIB_ENV && DEV_ENVIRONMENTS.includes(process.env.LIB_ENV);
 }
 
-export function _fn(fn: () => any) {
+export function _fn(fn: () => unknown) {
   return fn();
 }
 
@@ -31,12 +35,13 @@ export function _debug(fn: () => any) {
  * Join paths using node 'path' module.
  * @param paths
  */
-export const _path = (...paths: string[]) => {
+export const pathJoin = (...paths: string[]) => {
   return Path.join(...paths);
 };
 
-export function _debugFileRef(filename: string) {
+export function getDebugFilePath(filename: string) {
   return Path.join(DEBUG_DIR_PATH, filename);
 }
-export { CONF_COMMAND_ARGS } from './app-data';
-export { CONF_COMMAND_OPTIONS } from './app-data';
+
+export { CONF_COMMAND_ARGS } from './app-data.js';
+export { CONF_COMMAND_OPTIONS } from './app-data.js';

@@ -1,12 +1,13 @@
-import { BaseDbParser } from './DbParser';
-import { configUtil } from '../util/config.util';
-import { Knex } from 'knex';
-import { filer } from '../libs/filer';
-import { _debug, _debugFileRef } from '../util';
-import { IModel, IProperty, PostgresColumnInfo, PostgresTableInfo } from '../index';
+import { BaseDbParser } from './DbParser.js';
+import { configUtil } from '../util/config.util.js';
+import { filer } from '../libs/filer.js';
+import { _debug, getDebugFilePath } from '../util/index.js';
+import { IModel, IProperty, PostgresColumnInfo, PostgresTableInfo } from '../index.js';
 import * as ChangeCase from 'change-case';
-import { singular } from 'pluralize';
-import appData from '../util/app-data';
+import appData from '../util/app-data.js';
+import pkg from 'pluralize';
+
+const { singular } = pkg;
 
 export class PostgresParser extends BaseDbParser {
   async getTableNames(): Promise<string[]> {
@@ -33,7 +34,7 @@ WHERE t.table_schema NOT IN ('pg_catalog', 'information_schema')`);
     _debug(() => {
       filer.write({
         data: tableInfoList,
-        file: _debugFileRef('tableInfoList.txt')
+        file: getDebugFilePath('tableInfoList.txt')
       });
     });
 
@@ -42,7 +43,7 @@ WHERE t.table_schema NOT IN ('pg_catalog', 'information_schema')`);
     _debug(() => {
       filer.write({
         data: tables,
-        file: _debugFileRef('tables.txt')
+        file: getDebugFilePath('tables.txt')
       });
     });
 
@@ -88,7 +89,7 @@ WHERE col.table_schema NOT IN ('pg_catalog', 'information_schema')
       _debug(() => {
         filer.write({
           data: columnInfos,
-          file: _debugFileRef(`table-columns-${tablePath}.txt`)
+          file: getDebugFilePath(`table-columns-${tablePath}.txt`)
         });
       });
 
@@ -137,7 +138,7 @@ WHERE col.table_schema NOT IN ('pg_catalog', 'information_schema')
     _debug(() => {
       filer.write({
         data: models,
-        file: _debugFileRef(`models.txt`)
+        file: getDebugFilePath(`models.txt`)
       });
     });
 
@@ -158,7 +159,7 @@ WHERE kcu.table_schema NOT IN ('pg_catalog', 'information_schema')
     _debug(() => {
       filer.write({
         data: constraintInfos,
-        file: _debugFileRef(`constraint-info-${tableName}.${columnInfo.column_name}.txt`)
+        file: getDebugFilePath(`constraint-info-${tableName}.${columnInfo.column_name}.txt`)
       });
     });
 

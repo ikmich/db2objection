@@ -1,10 +1,13 @@
-import { IModel, IProperty, MysqlColumnInfo } from '../index';
-import { BaseDbParser } from './DbParser';
+import { IModel, IProperty, MysqlColumnInfo } from '../index.js';
+import { BaseDbParser } from './DbParser.js';
 import * as ChangeCase from 'change-case';
-import { singular } from 'pluralize';
-import { filer } from '../libs/filer';
-import { configUtil } from '../util/config.util';
-import { _debug, _debugFileRef } from '../util';
+import { filer } from '../libs/filer.js';
+import { configUtil } from '../util/config.util.js';
+import { _debug, getDebugFilePath } from '../util/index.js';
+import pkg from 'pluralize';
+
+const { singular } = pkg;
+
 
 export class MysqlParser extends BaseDbParser {
   async getTableNames(): Promise<string[]> {
@@ -13,7 +16,7 @@ export class MysqlParser extends BaseDbParser {
     _debug(() => {
       filer.write({
         data: result,
-        file: _debugFileRef(`show-tables.txt`)
+        file: getDebugFilePath(`show-tables.txt`)
       });
     });
 
@@ -44,7 +47,7 @@ export class MysqlParser extends BaseDbParser {
       _debug(() => {
         filer.write({
           data: mysqlTableInfoList,
-          file: _debugFileRef(`describe-${table}.txt`)
+          file: getDebugFilePath(`describe-${table}.txt`)
         });
       });
 
@@ -75,7 +78,7 @@ export class MysqlParser extends BaseDbParser {
     _debug(() => {
       filer.write({
         data: modelDescriptors,
-        file: _debugFileRef('model-descriptors.txt')
+        file: getDebugFilePath('model-descriptors.txt')
       });
     });
 
