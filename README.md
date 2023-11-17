@@ -103,3 +103,4 @@ module.exports = {
 - Database name value from cli option flag takes precedence over value in `db2objection.config.cjs` file.
 - cli update: `--case` is now a string option, replacing --camelCase.
 - New cli option: `--dir` to specify where model object files will be generated.
+- Specify multiple tables for --table cli flag
