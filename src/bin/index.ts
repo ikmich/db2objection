@@ -28,7 +28,7 @@ const program = new Command();
 program
   .description('Generate objection.js models or plain object models from database tables.')
   // .option('-p, --path <char>', 'Path relative to project root.')
-  .option('-t, --table <char>', 'Name of table to generate model for.')
+  .option('-t, --table [tables...]', 'Name of table to generate model for.')
   .option('--reset-config', 'Used with the init command to specify whether to reset the config file if it already exists.')
   .option('-c | --case <char>', '(snake | camel | ignore) Used with the `generate` command to indicate the name case for the generated model properties.')
   .option('--pojo', 'Used with the `generate` command to specify whether plain Typescript model classes will be generated, and not classes extending ObjectionJS Model.')
