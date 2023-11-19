@@ -18,17 +18,29 @@ export class InitCommand extends BaseCommand {
       filer.deleteFile(configFile);
     }
 
-    const configFileContents = `module.exports = {
+    const configFileContents = `
+/* 
+ It is recommended to keep db connection parameters in a hidden .env environment variables file that is not added to 
+ source version control (git, etc). This config file uses the 'dotenv' library to handle this. 
+ 
+ Please run "npm install dotenv" if it's not installed. 
+ */
+
+require('dotenv').config({
+  path: '.env'
+});
+
+module.exports = {
   /**
    * Knex configurations.
    */
   knex: {
-    client: '',
+    client: 'sqlite',
     connection: {
-      database: '',
-      host: '',
-      port: 0,
-      user: '',
+      database: process.env.DB_NAME,
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      user: process.env.DB_USER,
       password: ''
     }
   },
@@ -45,6 +57,6 @@ export class InitCommand extends BaseCommand {
       file: configFile
     });
 
-    console.log(`${CONFIG_FILENAME} created.`);
+    logNotice(`${CONFIG_FILENAME} created.`);
   }
 }

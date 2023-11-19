@@ -12,7 +12,7 @@ import { PostgresParser } from '../parser/PostgresParser.js';
 import appData from '../util/app-data.js';
 import { CONFIG_FILENAME } from '../consts.js';
 import { BaseCommand } from './base.command.js';
-import { logError } from '../util/log.util.js';
+import { logError, logNotice } from '../util/log.util.js';
 import { appUtil } from '../util/app.util.js';
 import ConnectionConfig = Knex.ConnectionConfig;
 
@@ -128,7 +128,7 @@ export class GenerateCommand extends BaseCommand {
         .replace(/\/*$/, '/');
 
       const num = modelDescriptors.length;
-      console.log(`${num} ${pluralize('model', num)} generated in "${relPath}".`);
+      logNotice(`${num} ${pluralize('model', num)} generated in "${relPath}".`);
     } catch (e) {
       console.error(e);
       process.exit(-1);

@@ -39,9 +39,7 @@ export const modelGenerator = {
     if (commandOpts?.scope && commandOpts?.scope.trim()) {
       const scope = commandOpts?.scope.trim()
         .replace(/[^a-zA-Z0-9-_]/g, '');
-
-      console.log({ scope })
-
+      
       outputDir = Path.join(outputDir, scope);
     }
 

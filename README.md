@@ -100,7 +100,10 @@ module.exports = {
 - New cli option: `--dir` to specify where model object files will be generated.
 - Specify multiple tables for --table cli flag
 
-### 0.1.1
+### 0.1.11
 
 - New cli command: `test-connection` to check that the db configuration is setup properly.
 - Fix outdated README contents.
+
+### 0.1.12
+- Minor bug fixes
