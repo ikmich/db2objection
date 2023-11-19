@@ -7,3 +7,5 @@ coverage/
 .env
 dev/
 _dev/
+.DS_Store
+**/*.DS_Store

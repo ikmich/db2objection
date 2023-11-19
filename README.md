@@ -25,7 +25,7 @@ $ yarn add global db2objection
 
 Run the commands in the root of the target project that's connecting to the database.
 
-### `$ db2obj init`
+### `db2obj init`
 
 Create the `db2objection.config.js` file. This should be the first step to using `db2objection` in your project.
 
@@ -33,27 +33,30 @@ Create the `db2objection.config.js` file. This should be the first step to using
 
 `--reset` [boolean] Remove existing config file and create a new one.
 
-### `$ db2obj generate`
+### `db2obj generate`
 
 Generate ObjectionJS model classes.
 
 ###### Options
 
-`--snake-case` [boolean] - Indicate that the model properties should be printed in snake case.  
-`-t | --table=<table_reference>` [string] - Name(s) of table(s) to generate model for. Use space to specify multiple
-tables.
-`-db | --database=<database_name>` [string] - The database to connect to. This overrides the database value that is set
-in the config file.  
-`--pojo` [boolean] - Whether plain Typescript model classes will be generated, and not classes extending Objection.js
-Model.
+```text
+Options:
 
-### `$ db2obj --help`
+  -t, --table [tables...]  Name of table to generate model for.
+  --reset-config           Used with the init command to specify whether to reset the config file if it already exists.
+  -c | --case <char>       (snake | camel | ignore) Used with the `generate` command to indicate the name case for the generated model properties.
+  --pojo                   Used with the `generate` command to specify whether plain Typescript model classes will be generated, and not classes extending ObjectionJS Model.
+  --db, --database <char>  Specify the database to connect to. This overrides the database value that is set in the config file.
+  --dir <char>             Specify target directory path relative to the project root.
+  -h, --help               display help for command
 
-See help information about the commands and options.
-
-### `$ db2obj --version`
-
-See the current version.
+Commands:
+  init                     Generate config file: db2objection.config.cjs and initialize.
+  generate                 Generate objection models from db
+  gen                      Alias for 'generate'
+  test-connection          Test the database connection.
+  help [command]           display help for command
+```
 
 ## The config file
 
@@ -75,27 +78,19 @@ module.exports = {
     }
   },
 
-  /**
-   * Relative path where the objection models should be saved. Be careful, as the contents of this directory will be
-   * overwritten when the `generate` command is run.
-   */
-  modelsOutputDir: '',
+  modelsOutputDir: 'src/obj-models', // Relative path where the objection models should be saved.
 
-  /**
-   * Tables for which models will not be generated.
-   */
-  ignoreTables: [],
+  ignoreTables: [], // Tables to be ignored. e.g. migration tables and other tables used by frameworks.
 
-  /**
-   * Set to 'true' to use snake case for the generated model properties
-   */
-  snakeCase: false
+  case: 'camel' // 'camel' | 'snake' | 'ignore'
 };
 ```
 
 ---
 
-# 0.1.0 changelogs
+# Changelogs
+
+### 0.1.0
 
 - Convert to ESM package.
 - The dir for generated models will not be deleted anymore. Now, the specific model files will simply be replaced
@@ -104,3 +99,8 @@ module.exports = {
 - cli update: `--case` is now a string option, replacing --camelCase.
 - New cli option: `--dir` to specify where model object files will be generated.
 - Specify multiple tables for --table cli flag
+
+### 0.1.1
+
+- New cli command: `test-connection` to check that the db configuration is setup properly.
+- Fix outdated README contents.

@@ -4,10 +4,12 @@ import { CONFIG_FILENAME } from '../consts.js';
 import { GenerateCommand } from './GenerateCommand.js';
 import { InitCommand } from './init/InitCommand.js';
 import appData from '../util/app-data.js';
+import { TestConnectionCommand } from './TestConnectionCommand.js';
 
 export const CMD_INIT = 'init';
 export const CMD_GENERATE = 'generate';
 export const CMD_GEN = 'gen';
+export const CMD_TEST_CONNECTION = 'test-connection';
 export const CMD_LABS = 'labs';
 
 export type NamingCase = 'camel' | 'snake' | 'ignore';
@@ -18,8 +20,6 @@ export interface Db2ObjOpts {
   pojo?: boolean;
   database?: string;
   case?: NamingCase;
-  // snakeCase?: boolean;
-  // camelCase?: boolean;
   dir?: string;
 }
 
@@ -56,6 +56,14 @@ program
   .action(async () => {
     await new GenerateCommand(program).run();
   });
+
+program
+  .command(CMD_TEST_CONNECTION)
+  .description(`Test the database connection.`)
+  .action(async () => {
+    await new TestConnectionCommand(program).run();
+  });
+
 
 program.parse();
 

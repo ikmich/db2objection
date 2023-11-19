@@ -1,6 +1,6 @@
 {
   "name": "db2objection",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Generate ObjectionJS models from database tables",
   "main": "dist/bin/index.js",
   "type": "module",
@@ -51,6 +51,7 @@
     "conf": "^12.0.0",
     "date-fns": "^2.30.0",
     "dotenv": "^16.0.0",
+    "esm": "^3.2.25",
     "fs-extra": "^11.1.1",
     "js-beautify": "^1.14.3",
     "knex": "^3.0.1",
@@ -61,6 +62,7 @@
     "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
     "sqlite3": "^5.1.6",
+    "tempy": "^3.1.0",
     "tsx": "^4.1.2",
     "typescript": "^5.2.2"
   },
@@ -73,6 +75,7 @@
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
+    "@types/esm": "^3.2.2",
     "@types/fs-extra": "^11.0.4",
     "@types/js-beautify": "^1.14.3",
     "@types/node": "^20.9.1",
