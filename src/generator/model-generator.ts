@@ -12,6 +12,7 @@ import Path from 'path';
 import { format } from 'date-fns';
 import { HISTORY_DIRNAME } from '../consts.js';
 import { appUtil } from '../util/app.util.js';
+import * as fs from 'fs-extra';
 
 const DATE_FORMAT_HISTORY = 'yyyyMMdd_hhmmss_SSSS';
 const { js: beautifyJs } = jsBeautifyPackage;
@@ -31,9 +32,20 @@ export const modelGenerator = {
    */
   generate(descriptors: IModel[]) {
     // const outputDir = pathJoin(process.cwd(), configUtil.getModelsOutputDirProperty());
-    const outputDir = appUtil.resolveModelsOutputDirPath();
+    let outputDir = appUtil.resolveModelsOutputDirPath();
 
     const commandOpts = appData.getCommandOptions();
+
+    if (commandOpts?.scope && commandOpts?.scope.trim()) {
+      const scope = commandOpts?.scope.trim()
+        .replace(/[^a-zA-Z0-9-_]/g, '');
+
+      console.log({ scope })
+
+      outputDir = Path.join(outputDir, scope);
+    }
+
+    fs.ensureDirSync(outputDir);
 
     let modelTemplate = (() => {
       if (commandOpts && commandOpts.pojo) {

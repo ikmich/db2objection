@@ -21,6 +21,7 @@ export interface Db2ObjOpts {
   database?: string;
   case?: NamingCase;
   dir?: string;
+  scope?: string;
 }
 
 const program = new Command();
@@ -34,6 +35,7 @@ program
   .option('--pojo', 'Used with the `generate` command to specify whether plain Typescript model classes will be generated, and not classes extending ObjectionJS Model.')
   .option('--db, --database <char>', 'Specify the database to connect to. This overrides the database value that is set in the config file.')
   .option('--dir <char>', 'Specify target directory path relative to the project root.')
+  .option('--scope <char>', 'Used to create a folder namespace for generated models.')
 ;
 
 program

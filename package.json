@@ -1,6 +1,6 @@
 {
   "name": "db2objection",
-  "version": "0.1.1",
+  "version": "0.1.11",
   "description": "Generate ObjectionJS models from database tables",
   "main": "dist/bin/index.js",
   "type": "module",
