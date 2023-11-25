@@ -9,12 +9,12 @@ import { PATTERN_MODEL_NAME, PATTERN_MODEL_PROPERTIES, PATTERN_TABLE_FIELDS } fr
 import { pojoModelTemplate } from './templates/pojo-model-template.js';
 import appData from '../util/app-data.js';
 import Path from 'path';
-import { format } from 'date-fns';
-import { HISTORY_DIRNAME } from '../consts.js';
+import { DB2OBJ_DIRNAME } from '../consts.js';
 import { appUtil } from '../util/app.util.js';
 import * as fs from 'fs-extra';
+import { logNotice } from '../util/log.util.js';
 
-const DATE_FORMAT_HISTORY = 'yyyyMMdd_hhmmss_SSSS';
+// const DATE_FORMAT_HISTORY = 'yyyyMMdd_hhmmss_SSSS';
 const { js: beautifyJs } = jsBeautifyPackage;
 
 const regexes = {
@@ -39,7 +39,7 @@ export const modelGenerator = {
     if (commandOpts?.scope && commandOpts?.scope.trim()) {
       const scope = commandOpts?.scope.trim()
         .replace(/[^a-zA-Z0-9-_]/g, '');
-      
+
       outputDir = Path.join(outputDir, scope);
     }
 
@@ -64,27 +64,41 @@ export const modelGenerator = {
 
       code = code.replace(regexes.nullishOperator, '?:');
 
-      let objFile = pathJoin(outputDir, `${descriptor.modelName}.obj.ts`);
+      let modelFilename = `${descriptor.modelName}.obj.ts`;
+      let objFile = pathJoin(outputDir, modelFilename);
+
+      const useCase = {
+        forNewModelFile() {
+          filer.write({
+            data: code,
+            file: objFile
+          });
+          logNotice(`${modelFilename} generated in ${outputDir}`);
+        },
+        forExistingFile() {
+          // create copy version.
+          const destDir = Path.join(process.cwd(), DB2OBJ_DIRNAME);
+          // todo - if dir does not exist, ask user to allow adding it in .gitignore.
+          filer.ensureDir(destDir);
+
+          // const formattedDate = format(new Date(), DATE_FORMAT_HISTORY);
+          // const historyFileName = `${descriptor.modelName}.obj-${formattedDate}.ts`;
+          const filename = `__${descriptor.modelName}.obj.ts`;
+          let destFilepath = Path.join(destDir, filename);
+          filer.write({
+            data: code,
+            file: destFilepath
+          });
+          logNotice(`(copy) ${filename} generated in ${destFilepath}`);
+        }
+      };
 
       if (filer.exists(objFile)) {
-        // create history version.
-        const copyDestDir = Path.join(process.cwd(), HISTORY_DIRNAME);
-        filer.ensureDir(copyDestDir);
-
-        const formattedDate = format(new Date(), DATE_FORMAT_HISTORY);
-        const historyFileName = `${descriptor.modelName}.obj-${formattedDate}.ts`;
-        let historyFilePath = Path.join(copyDestDir, historyFileName);
-        filer.write({
-          data: filer.read({ file: objFile }),
-          file: historyFilePath
-        });
+        useCase.forExistingFile();
+      } else {
+        // Write model file to output directory.
+        useCase.forNewModelFile();
       }
-
-      // Write model file to output directory.
-      filer.write({
-        data: code,
-        file: objFile
-      });
     }
   }
 };

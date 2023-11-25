@@ -3,10 +3,10 @@ import { BaseDbParser } from './DbParser.js';
 import * as ChangeCase from 'change-case';
 import { filer } from '../libs/filer.js';
 import { configUtil } from '../util/config.util.js';
-import { _debug, getDebugFilePath } from '../util/index.js';
-import pkg from 'pluralize';
+import { _debug, getDebugFilePath, libUtils } from '../util/index.js';
+// import pkg from 'pluralize';
 
-const { singular } = pkg;
+// const { singular } = pkg;
 
 
 export class MysqlParser extends BaseDbParser {
@@ -66,7 +66,7 @@ export class MysqlParser extends BaseDbParser {
       }
 
       const modelDescriptor: IModel = {
-        modelName: ChangeCase.pascalCase(singular(table)),
+        modelName: ChangeCase.pascalCase(libUtils.singular(table)),
         tableName: table,
         idColumn: priColumn,
         modelProperties: properties

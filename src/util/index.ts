@@ -2,6 +2,9 @@ import Path from 'path';
 import { fileURLToPath } from 'url';
 import { config } from 'dotenv';
 import { DEBUG_DIR_PATH } from '../consts.js';
+import pluralize from 'pluralize';
+const { singular } = pluralize;
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = Path.dirname(__filename);
@@ -43,3 +46,15 @@ export function getDebugFilePath(filename: string) {
   return Path.join(DEBUG_DIR_PATH, filename);
 }
 
+export const libUtils = {
+  singular(word: string) {
+    const lower = word.toLowerCase();
+    switch (true) {
+      case lower === 'data':
+      case lower.endsWith('data'):
+
+        return word;
+    }
+    return singular(word);
+  }
+};

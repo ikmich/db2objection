@@ -1,13 +1,13 @@
 import { BaseDbParser } from './DbParser.js';
 import { configUtil } from '../util/config.util.js';
 import { filer } from '../libs/filer.js';
-import { _debug, getDebugFilePath } from '../util/index.js';
+import { _debug, getDebugFilePath, libUtils } from '../util/index.js';
 import { IModel, IProperty, PostgresColumnInfo, PostgresTableInfo } from '../types.js';
 import * as ChangeCase from 'change-case';
 import appData from '../util/app-data.js';
-import pkg from 'pluralize';
+// import pkg from 'pluralize';
 
-const { singular } = pkg;
+// const { singular } = pkg;
 
 export class PostgresParser extends BaseDbParser {
   async getTableNames(): Promise<string[]> {
@@ -126,7 +126,7 @@ WHERE col.table_schema NOT IN ('pg_catalog', 'information_schema')
       })();
 
       const model: Partial<IModel> = {
-        modelName: ChangeCase.pascalCase(singular(tableName)),
+        modelName: ChangeCase.pascalCase(libUtils.singular(tableName)),
         tableName: modelTableName,
         modelProperties: properties,
         idColumn

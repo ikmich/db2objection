@@ -90,6 +90,20 @@ module.exports = {
 
 # Changelogs
 
+### 0.1.13
+
+- Managed singularization - e.g. don't use "datum" for a "data" word singularization.
+- Existing model files are no more overwritten; instead a copy is saved in "<project_root>/__db2obj".
+
+### 0.1.12
+
+- Minor bug fixes
+
+### 0.1.11
+
+- New cli command: `test-connection` to check that the db configuration is setup properly.
+- Fix outdated README contents.
+
 ### 0.1.0
 
 - Convert to ESM package.
@@ -99,11 +113,3 @@ module.exports = {
 - cli update: `--case` is now a string option, replacing --camelCase.
 - New cli option: `--dir` to specify where model object files will be generated.
 - Specify multiple tables for --table cli flag
-
-### 0.1.11
-
-- New cli command: `test-connection` to check that the db configuration is setup properly.
-- Fix outdated README contents.
-
-### 0.1.12
-- Minor bug fixes

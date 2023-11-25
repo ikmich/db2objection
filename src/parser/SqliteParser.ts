@@ -2,7 +2,7 @@ import { BaseDbParser } from './DbParser.js';
 import { IModel, IProperty, SqliteColumnInfo } from '../types.js';
 import { configUtil } from '../util/config.util.js';
 import { filer } from '../libs/filer.js';
-import { _debug, getDebugFilePath } from '../util/index.js';
+import { _debug, getDebugFilePath, libUtils } from '../util/index.js';
 import * as ChangeCase from 'change-case';
 import pkg from 'pluralize';
 
@@ -40,7 +40,7 @@ export class SqliteParser extends BaseDbParser {
       }
 
       const modelDescriptor: IModel = {
-        modelName: ChangeCase.pascalCase(singular(table)),
+        modelName: ChangeCase.pascalCase(libUtils.singular(table)),
         tableName: table,
         idColumn: priColumn,
         modelProperties: properties

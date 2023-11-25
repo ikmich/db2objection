@@ -128,7 +128,7 @@ export class GenerateCommand extends BaseCommand {
         .replace(/\/*$/, '/');
 
       const num = modelDescriptors.length;
-      logNotice(`${num} ${pluralize('model', num)} generated in "${relPath}".`);
+      logNotice(`${num} ${pluralize('model', num)} generated.`); // in "${relPath}"
     } catch (e) {
       console.error(e);
       process.exit(-1);

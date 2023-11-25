@@ -1,6 +1,6 @@
 {
   "name": "db2objection",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Generate ObjectionJS models from database tables",
   "main": "dist/bin/index.js",
   "type": "module",
@@ -10,7 +10,7 @@
     "clean": "rimraf dist/",
     "check": "tsc --noEmit",
     "prepublishOnly": "npm run build",
-    "install-dev": "LIB_ENV=development ./depl.sh"
+    "dev:install-cli": "LIB_ENV=development ./depl.sh"
   },
   "bin": {
     "db2objection": "dist/bin/index.js",
